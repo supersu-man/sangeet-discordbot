@@ -1,0 +1,6 @@
+git+https://github.com/Rapptz/discord.py@master
+PyNaCl
+discord==1.7.3
+requests==2.26.0
+async-timeout
+youtube_dl
