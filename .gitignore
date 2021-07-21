@@ -114,3 +114,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 key.py
+test.py
