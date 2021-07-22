@@ -24,6 +24,9 @@ def get_link_details(link):
     url = x['formats'][0]['url']
     artist = x['artist']
     title = x['title']
+    for i in x['formats']:
+        if i['format_id'] == '251':
+            url = i['url']
     return url, title, artist
 
 
@@ -60,8 +63,6 @@ async def p(ctx, *query):
 
     await ctx.send("Playing " + details[1] + " by " + details[2])
     voice.play(discord.FFmpegPCMAudio(details[0], **FFMPEG_OPTS))
-
-
     voice.is_playing()
 
 
