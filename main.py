@@ -3,8 +3,6 @@ from discord.ext import commands
 import youtube_dl
 from discord.utils import get
 from ytmusicapi import YTMusic
-from key import key
-from keep_alive import keep_alive
 
 client = commands.Bot(command_prefix="@")
 
@@ -106,6 +104,11 @@ async def stop(ctx):
     voice.stop()
 
 #Use this while hosting on replit
+#from keep_alive import keep_alive
+#import os
 #keep_alive()
+#client.run(os.environ['key'])
 
+#Use this if you just want to just run the python file on your env
+from key import key
 client.run(key)
