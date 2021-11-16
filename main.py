@@ -4,6 +4,7 @@ import youtube_dl
 from discord.utils import get
 from ytmusicapi import YTMusic
 from key import key
+from keep_alive import keep_alive
 
 client = commands.Bot(command_prefix="@")
 
@@ -102,5 +103,7 @@ async def stop(ctx):
     await ctx.send("Stopped")
     voice.stop()
 
+#Use this while hosting on replit
+#keep_alive()
 
 client.run(key)

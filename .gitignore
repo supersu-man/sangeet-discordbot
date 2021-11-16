@@ -90,12 +90,12 @@ celerybeat-schedule
 .env
 .venv
 env/
-venv/
-vanvv/
+venv
 ENV/
 env.bak/
 venv.bak/
 .idea/
+.vscode
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -115,3 +115,4 @@ dmypy.json
 .pyre/
 key.py
 test.py
+tempCodeRunnerFile.py
