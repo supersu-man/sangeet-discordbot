@@ -13,7 +13,7 @@ youtube_dl.utils.bug_reports_message = lambda: ''
 
 def get_music_link(query):
     ytmusic = YTMusic()
-    search_results = ytmusic.search(' '.join(query))
+    search_results = ytmusic.search(query)
     for i in search_results:
         if i['resultType'] == 'song':
             return "https://www.youtube.com/watch?v=" + i['videoId']
@@ -45,16 +45,18 @@ async def join(ctx, voice):
 
 @client.command()
 async def p(ctx, *query):
+    search_query = ' '.join(query)
     FFMPEG_OPTS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
-
     voice = get(client.voice_clients, guild=ctx.guild)
-
     await join(ctx, voice)
-
     voice = get(client.voice_clients, guild=ctx.guild)
-
-    link = get_music_link(query)
-    details = get_link_details(link)
+    details = ""
+    if('http' in search_query):
+        video_id = search_query.split('v=')[1].split('&')[0]
+        details = get_link_details('https://www.youtube.com/watch?v='+video_id)
+    else:
+        link = get_music_link(search_query)
+        details = get_link_details(link)
 
     try:
         if voice.is_playing():
