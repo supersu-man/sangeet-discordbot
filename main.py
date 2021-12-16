@@ -21,7 +21,10 @@ def get_music_link(query):
 def get_link_details(link):
     x = youtube_dl.YoutubeDL().extract_info(link, download=False)
     url = x['formats'][0]['url']
-    artist = x['artist']
+    artist = 'No Artist'
+    try:
+        artist = x['artist']
+    except: pass
     title = x['title']
     for i in x['formats']:
         if i['format_id'] == '251':
