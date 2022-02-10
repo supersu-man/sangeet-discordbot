@@ -108,9 +108,9 @@ async def p(ctx, *query):
 
 @client.command()
 async def search(ctx, *query):
-    if 'https' not in query:
-        await ctx.send(get_music_link(query))
-
+    search_query = ' '.join(query)
+    if 'https' not in search_query:
+        await ctx.send(get_music_link(search_query))
 
 @client.command()
 async def leave(ctx):
