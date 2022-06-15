@@ -43,6 +43,10 @@ const player = createAudioPlayer({
 })
 
 function commandDeploy(msg: Message) {
+    if (!msg.member?.voice.channel) {
+        msg.reply('Join a voice channel to use commands')
+        return
+    }
     const key = msg.content.split('@')[1].split(' ')[0]
     switch (key) {
         case 'p':
