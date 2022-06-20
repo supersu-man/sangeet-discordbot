@@ -83,15 +83,17 @@ async function playmusic(msg: Message) {
     })
     const query = msg.content.split('@p ')[1]
     const musics = await ytmusic.searchMusics(query)
-    const suggestions = await ytmusic.getSuggestions(musics[0].youtubeId!!)
-    const link = 'https://www.youtube.com/watch?v=' + suggestions[0].youtubeId
+    const musicid = musics[0].youtubeId
+    const title = musics[0].title
+    if(!musicid) return
+    const link = 'https://www.youtube.com/watch?v=' + musicid
     let stream = await play.stream(link)
     let resource = createAudioResource(stream.stream, {
         inputType: stream.type
     })
     connection.subscribe(player)
     player.play(resource)
-    msg.reply(`Playing ${suggestions[0].title}`)
+    msg.reply(`Playing ${title}`)
 }
 
 client.login(process.env.token)
