@@ -32,7 +32,9 @@ client.once('ready', () => {
 
 client.on("messageCreate", (msg: Message) => {
     if (msg.content.startsWith('@')) {
-        commandDeploy(msg)
+        try {
+            commandDeploy(msg)
+        } catch (error) {}
     }
 })
 
@@ -82,11 +84,17 @@ async function playmusic(msg: Message) {
         adapterCreator: voiceChannel.guild.voiceAdapterCreator
     })
     const query = msg.content.split('@p ')[1]
-    const musics = await ytmusic.searchMusics(query)
-    const musicid = musics[0].youtubeId
-    const title = musics[0].title
-    if(!musicid) return
-    const link = 'https://www.youtube.com/watch?v=' + musicid
+    let link = ""
+    if (query.startsWith('https')) {
+        link = query
+    } else {
+        const musics = await ytmusic.searchMusics(query)
+        const musicid = musics[0].youtubeId
+        if (!musicid) return
+        link = 'https://www.youtube.com/watch?v=' + musicid
+    }
+    const info : any = await play.video_info(link)
+    const title = info.video_details.title
     let stream = await play.stream(link)
     let resource = createAudioResource(stream.stream, {
         inputType: stream.type
