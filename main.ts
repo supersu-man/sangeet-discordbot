@@ -34,7 +34,7 @@ client.on("messageCreate", (msg: Message) => {
     if (msg.content.startsWith('@')) {
         try {
             commandDeploy(msg)
-        } catch (error) {}
+        } catch (error) { }
     }
 })
 
@@ -93,15 +93,20 @@ async function playmusic(msg: Message) {
         if (!musicid) return
         link = 'https://www.youtube.com/watch?v=' + musicid
     }
-    const info : any = await play.video_info(link)
-    const title = info.video_details.title
-    let stream = await play.stream(link)
-    let resource = createAudioResource(stream.stream, {
-        inputType: stream.type
-    })
-    connection.subscribe(player)
-    player.play(resource)
-    msg.reply(`Playing ${title}`)
+    try {
+        const info: any = await play.video_info(link)
+        const title = info.video_details.title
+        let stream = await play.stream(link)
+        let resource = createAudioResource(stream.stream, {
+            inputType: stream.type
+        })
+        connection.subscribe(player)
+        player.play(resource)
+        msg.reply(`Playing ${title}`)
+    } catch (error) {
+        msg.reply(`Error with the link`)
+    }
+
 }
 
 client.login(process.env.token)
