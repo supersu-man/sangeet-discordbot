@@ -2,24 +2,11 @@ import { Client, GatewayIntentBits, Events, REST, Routes, ChatInputCommandIntera
 import { joinVoiceChannel, createAudioPlayer, createAudioResource, NoSubscriberBehavior, VoiceConnection, VoiceConnectionStatus } from "@discordjs/voice"
 import * as ytmusic from "node-youtube-music"
 import play from 'play-dl'
-import express from "express"
 import dotenv from 'dotenv'
 import { commands } from "./commands"
 dotenv.config()
 
 let voiceConnection: VoiceConnection
-//startExpressServer()    //For avoidong Heroku $PORT error
-
-function startExpressServer() {
-    const app = express()
-    app.set('port', (process.env.PORT || 5000))
-    app.get('/', function (request: express.Request, response: express.Response) {
-        var result = 'App is running'
-        response.send(result)
-    }).listen(app.get('port'), function () {
-        console.log('App is running, server is listening on port ', app.get('port'))
-    })
-}
 
 const client = new Client({
     intents: [
