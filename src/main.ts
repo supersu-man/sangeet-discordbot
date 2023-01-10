@@ -62,7 +62,6 @@ const player = createAudioPlayer({
 
 async function playmusic(interaction: ChatInputCommandInteraction) {
     const query = interaction.options.get('title')?.value as string
-    interaction.reply('Playing ' + query)
     const voiceChannel = (interaction.member as GuildMember).voice.channel!
     voiceConnection = joinVoiceChannel({
         channelId: voiceChannel.id,
@@ -82,15 +81,15 @@ async function playmusic(interaction: ChatInputCommandInteraction) {
         console.log(link)
         const info: any = await play.video_info(link)
         const title = info.video_details.title
+        interaction.reply(`Playing ${title}`)
         let stream = await play.stream(link)
         let resource = createAudioResource(stream.stream, {
             inputType: stream.type
         })
         voiceConnection.subscribe(player)
         player.play(resource)
-        //interaction.reply(`Playing ${title}`)
     } catch (error) {
-        //interaction.reply(`Error with the link`)
+        interaction.reply(`Error with the link`)
     }
 }
 
