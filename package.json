@@ -4,7 +4,10 @@
   "description": "Streams music from youtube music",
   "main": "src/main.ts",
   "scripts": {
-    "start": "npx ts-node src/main.ts"
+    "start": "npx ts-node src/main.ts",
+    "dev": "docker compose up --build",
+    "docker:up": "docker compose up -d --build",
+    "docker:down": "docker compose down"
   },
   "author": "Sumanth Perambuduri",
   "license": "Apache-2.0",
