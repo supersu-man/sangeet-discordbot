@@ -1,9 +1,9 @@
 import { Client, GatewayIntentBits, Events, REST, Routes, ChatInputCommandInteraction, GuildMember } from "discord.js"
 import { joinVoiceChannel, createAudioPlayer, createAudioResource, NoSubscriberBehavior, VoiceConnection, VoiceConnectionStatus } from "@discordjs/voice"
-import * as ytmusic from "node-youtube-music"
 import play from 'play-dl'
 import dotenv from 'dotenv'
 import { commands } from "./commands"
+import { searchMusics } from "node-youtube-music"
 dotenv.config()
 
 let voiceConnection: VoiceConnection
@@ -68,20 +68,15 @@ async function playmusic(interaction: ChatInputCommandInteraction) {
         guildId: voiceChannel.guildId,
         adapterCreator: voiceChannel.guild.voiceAdapterCreator
     })
-    let link = ""
-    if (query.startsWith('https')) {
-        link = query
-    } else {
-        const musics = await ytmusic.searchMusics(query)
-        const musicid = musics[0].youtubeId
-        if (!musicid) return
-        link = 'https://www.youtube.com/watch?v=' + musicid
+    let link = query
+    if(!query.includes('https')) {
+        const musics = await searchMusics(query)
+        link = 'https://www.youtube.com/watch?v=' + musics[0].youtubeId
     }
+    
     try {
-        console.log(link)
-        const info: any = await play.video_info(link)
-        const title = info.video_details.title
-        interaction.reply(`Playing ${title}`)
+        const info: any = await play.video_basic_info(link)
+        interaction.reply(`Playing ${info.video_details.title}`)
         let stream = await play.stream(link)
         let resource = createAudioResource(stream.stream, {
             inputType: stream.type
