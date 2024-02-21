@@ -1,9 +1,10 @@
-import { Client, GatewayIntentBits, Events, REST, Routes, ChatInputCommandInteraction, GuildMember } from "discord.js"
+import { Client, GatewayIntentBits, Events, REST, Routes, ChatInputCommandInteraction, GuildMember, ActionRowBuilder, ButtonBuilder } from "discord.js"
 import { joinVoiceChannel, createAudioPlayer, createAudioResource, NoSubscriberBehavior, VoiceConnection, VoiceConnectionStatus } from "@discordjs/voice"
 import play from 'play-dl'
 import dotenv from 'dotenv'
 import { commands } from "./commands"
 import { searchMusics } from "node-youtube-music"
+import { pauseButton, playButton } from "./buttons"
 dotenv.config()
 
 let voiceConnection: VoiceConnection
@@ -76,7 +77,27 @@ async function playmusic(interaction: ChatInputCommandInteraction) {
     
     try {
         const info: any = await play.video_basic_info(link)
-        interaction.reply(`Playing ${info.video_details.title}`)
+
+        const reply = await interaction.reply({
+            content: `Playing ${info.video_details.title}`,
+            components: [new ActionRowBuilder<ButtonBuilder>().addComponents(pauseButton)]
+        })
+        const collector = reply.createMessageComponentCollector()
+        collector.on('collect', confirmation => {
+            if (confirmation.customId == 'pause') {
+                player.pause()
+                confirmation.update({
+                    content: `Playing ${info.video_details.title}`,
+                    components: [new ActionRowBuilder<ButtonBuilder>().addComponents(playButton)]
+                })
+            } else if (confirmation.customId == 'play') {
+                player.unpause()
+                confirmation.update({
+                    content: `Playing ${info.video_details.title}`,
+                    components: [new ActionRowBuilder<ButtonBuilder>().addComponents(pauseButton)]
+                })
+            }
+        })
         let stream = await play.stream(link)
         let resource = createAudioResource(stream.stream, {
             inputType: stream.type
