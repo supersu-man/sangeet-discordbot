@@ -21,6 +21,11 @@ const leaveCommand = new SlashCommandBuilder()
     .setName('leave')
     .setDescription('Leave voice channel')
 
-const commands = [playCommand, pauseCommand, resumeCommand, stopCommand, leaveCommand]
+const searchCommand = new SlashCommandBuilder()
+    .setName('search')
+    .setDescription('Search music')
+    .addStringOption((option) => option.setName('title').setDescription('Search music - get top 3 results').setRequired(true))
+
+const commands = [playCommand, pauseCommand, resumeCommand, stopCommand, leaveCommand, searchCommand]
 
 export { commands }

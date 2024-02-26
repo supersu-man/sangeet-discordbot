@@ -17,4 +17,16 @@ const stopButton = new ButtonBuilder()
     .setLabel('Repeat')
     .setStyle(ButtonStyle.Primary);
 
-export { pauseButton, playButton, repeatButton, stopButton}
+const firstButton = new ButtonBuilder()
+    .setCustomId('firstButton')
+    .setLabel('Repeat')
+    .setStyle(ButtonStyle.Primary);
+const secondButton = new ButtonBuilder()
+    .setCustomId('secondButton')
+    .setLabel('Repeat')
+    .setStyle(ButtonStyle.Primary);
+const thirdButton = new ButtonBuilder()
+    .setCustomId('thirdButton')
+    .setLabel('Repeat')
+    .setStyle(ButtonStyle.Primary);
+export { pauseButton, playButton, repeatButton, stopButton, firstButton, secondButton, thirdButton }
