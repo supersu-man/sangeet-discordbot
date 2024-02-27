@@ -30,7 +30,39 @@ client.on(Events.InteractionCreate, async interaction => {
     }
     switch (interaction.commandName) {
         case 'play':
-            playmusic(interaction as ChatInputCommandInteraction)
+            await interaction.deferReply()
+            let query = interaction.options.get('title')?.value as string
+            let title = ''
+            if(query.includes('https')) {
+                const info: any = await play.video_basic_info(query)
+                title = info.video_details.title
+            } else {
+                const musics = await searchMusics(query)
+                const top1 = { 'title': musics[0].title, 'artist': musics[0].artists?.flatMap((artist) => artist.name).join(',').toString(), 'id': musics[0].youtubeId }
+                query = `https://www.youtube.com/watch?v=${top1.id}`
+            }
+            const reply = await interaction.editReply({
+                content: `Playing ${title}`,
+                components: [new ActionRowBuilder<ButtonBuilder>().addComponents(pauseButton)]
+            })
+            await joinVC(interaction as ChatInputCommandInteraction)
+            await playLink(query)
+            const collector = reply.createMessageComponentCollector()
+            collector.on('collect', confirmation => {
+                if (confirmation.customId == 'pause') {
+                    player.pause()
+                    confirmation.update({
+                        content: `Playing ${title}`,
+                        components: [new ActionRowBuilder<ButtonBuilder>().addComponents(playButton)]
+                    })
+                } else if (confirmation.customId == 'play') {
+                    player.unpause()
+                    confirmation.update({
+                        content: `Playing ${title}`,
+                        components: [new ActionRowBuilder<ButtonBuilder>().addComponents(pauseButton)]
+                    })
+                }
+            })
             break
         case 'pause':
             player.pause()
@@ -106,53 +138,6 @@ const player = createAudioPlayer({
         noSubscriber: NoSubscriberBehavior.Play
     }
 })
-
-async function playmusic(interaction: ChatInputCommandInteraction) {
-    const query = interaction.options.get('title')?.value as string
-    const voiceChannel = (interaction.member as GuildMember).voice.channel!
-    voiceConnection = joinVoiceChannel({
-        channelId: voiceChannel.id,
-        guildId: voiceChannel.guildId,
-        adapterCreator: voiceChannel.guild.voiceAdapterCreator
-    })
-    let link = query
-    if(!query.includes('https')) {
-        const musics = await searchMusics(query)
-        link = 'https://www.youtube.com/watch?v=' + musics[0].youtubeId
-    }
-    try {
-        const info: any = await play.video_basic_info(link)
-
-        const reply = await interaction.reply({
-            content: `Playing ${info.video_details.title}`,
-            components: [new ActionRowBuilder<ButtonBuilder>().addComponents(pauseButton)]
-        })
-        const collector = reply.createMessageComponentCollector()
-        collector.on('collect', confirmation => {
-            if (confirmation.customId == 'pause') {
-                player.pause()
-                confirmation.update({
-                    content: `Playing ${info.video_details.title}`,
-                    components: [new ActionRowBuilder<ButtonBuilder>().addComponents(playButton)]
-                })
-            } else if (confirmation.customId == 'play') {
-                player.unpause()
-                confirmation.update({
-                    content: `Playing ${info.video_details.title}`,
-                    components: [new ActionRowBuilder<ButtonBuilder>().addComponents(pauseButton)]
-                })
-            }
-        })
-        let stream = await play.stream(link)
-        let resource = createAudioResource(stream.stream, {
-            inputType: stream.type
-        })
-        voiceConnection.subscribe(player)
-        player.play(resource)
-    } catch (error) {
-        interaction.reply(`Error with the link`)
-    }
-}
 
 async function playLink(link: string) {
     let stream = await play.stream(link)
