@@ -45,6 +45,7 @@ client.on(Events.InteractionCreate, async interaction => {
             interaction.reply('Stopped')
             break
         case 'search':
+            await interaction.deferReply()
             const musics = await searchMusics(interaction.options.get('title')?.value as string)
             const top3 = musics.slice(0, 3).map((music) => { return { 'title': music.title, 'artist': music.artists?.flatMap((artist) => artist.name).join(',').toString(), 'id': music.youtubeId } })
             let music = top3[0]
@@ -52,7 +53,7 @@ client.on(Events.InteractionCreate, async interaction => {
             secondButton.setLabel(top3[1].title || 'No title')
             thirdButton.setLabel(top3[2].title || 'No title')
 
-            const searchReply = await interaction.reply({
+            const searchReply = await interaction.editReply({
                 content: `Searching "${interaction.options.get('title')?.value as string}"`,
                 components: [
                     new ActionRowBuilder<ButtonBuilder>().addComponents(firstButton),
@@ -64,12 +65,12 @@ client.on(Events.InteractionCreate, async interaction => {
                 if (confirmation.customId == 'firstButton' || confirmation.customId == 'secondButton' || confirmation.customId == 'thirdButton') {
                     if (confirmation.customId == 'secondButton') music = top3[1]
                     else if (confirmation.customId == 'thirdButton') music = top3[2]
-                    joinVC(interaction as ChatInputCommandInteraction)
-                    await playLink(`https://www.youtube.com/watch?v=${music.id}`)
-                    confirmation.update({
+                    await confirmation.update({
                         content: `Playing ${music.title}`,
                         components: [new ActionRowBuilder<ButtonBuilder>().addComponents(pauseButton)]
                     })
+                    await joinVC(interaction as ChatInputCommandInteraction)
+                    await playLink(`https://www.youtube.com/watch?v=${music.id}`)
                 }
                 
                 if (confirmation.customId == 'pause') {
