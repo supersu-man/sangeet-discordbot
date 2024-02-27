@@ -53,8 +53,12 @@ client.on(Events.InteractionCreate, async interaction => {
             thirdButton.setLabel(top3[2].title || 'No title')
 
             const searchReply = await interaction.reply({
-                content: `Searching ${interaction.options.get('title')?.value as string}`,
-                components: [new ActionRowBuilder<ButtonBuilder>().addComponents(firstButton, secondButton, thirdButton)]
+                content: `Searching "${interaction.options.get('title')?.value as string}"`,
+                components: [
+                    new ActionRowBuilder<ButtonBuilder>().addComponents(firstButton),
+                    new ActionRowBuilder<ButtonBuilder>().addComponents(secondButton),
+                    new ActionRowBuilder<ButtonBuilder>().addComponents(thirdButton)
+                ]
             })
             searchReply.createMessageComponentCollector().on('collect', async confirmation => {
                 if (confirmation.customId == 'firstButton' || confirmation.customId == 'secondButton' || confirmation.customId == 'thirdButton') {
