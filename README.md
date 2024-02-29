@@ -7,6 +7,7 @@ Streams music on Discord from Youtube Music.
 - Clone the repository 
 - Create a file called `.env` in project
 - Add `token='your_token_here'` to `.env` file
+- Add `client_id='your_client_id_here'` to `.env` file
 - Use `npm i` to install all the dependencies
 - Use `npm run start` to run the bot
 - Invite your Discord Bot to your server (from Discord Developer Console)
