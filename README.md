@@ -2,6 +2,15 @@
 
 Streams music on Discord from Youtube Music.
 
+## Required permissions
+
+- Connect
+- Speak
+
+## Privileged Gateway Intents
+
+- Message Content Intent
+
 ## Instructions
 
 - Clone the repository 
@@ -20,3 +29,4 @@ Streams music on Discord from Youtube Music.
 - /stop
 - /resume
 - /leave
+- /search
