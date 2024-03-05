@@ -38,8 +38,8 @@ client.on(Events.InteractionCreate, async interaction => {
                 title = info.video_details.title
             } else {
                 const musics = await searchMusics(query)
-                const top1 = { 'title': musics[0].title, 'artist': musics[0].artists?.flatMap((artist) => artist.name).join(',').toString(), 'id': musics[0].youtubeId }
-                query = `https://www.youtube.com/watch?v=${top1.id}`
+                title = musics[0].title as string
+                query = `https://www.youtube.com/watch?v=${musics[0].youtubeId}`
             }
             const reply = await interaction.editReply({
                 content: `Playing ${title}`,
@@ -79,7 +79,7 @@ client.on(Events.InteractionCreate, async interaction => {
         case 'search':
             await interaction.deferReply()
             const musics = await searchMusics(interaction.options.get('title')?.value as string)
-            const top3 = musics.slice(0, 3).map((music) => { return { 'title': music.title, 'artist': music.artists?.flatMap((artist) => artist.name).join(',').toString(), 'id': music.youtubeId } })
+            const top3 = musics.slice(0, 3).map((music) => { return { 'title': music.title, 'id': music.youtubeId } })
             let music = top3[0]
             firstButton.setLabel(top3[0].title || 'No title')
             secondButton.setLabel(top3[1].title || 'No title')
