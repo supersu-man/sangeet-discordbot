@@ -1,9 +1,11 @@
-FROM node:lts
+FROM node:alpine
 
 WORKDIR /app
 
-COPY . .
+COPY package*.json ./
 
-RUN npm i
+RUN npm install
+
+COPY . ./
 
 CMD [ "npm", "start" ]
